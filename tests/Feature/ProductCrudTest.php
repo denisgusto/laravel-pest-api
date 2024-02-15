@@ -83,4 +83,31 @@ test('authenticated user can update a product', function () {
         'id' => $product->id,
         'name' => $data['name'],
     ]);
-})->only();
+});
+
+test('guest user cannot delete a product', function () {
+    $product = Product::factory()->create();
+
+    $this->deleteJson("/api/products/{$product->id}")
+        ->assertStatus(401);
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'name' => $product->name,
+    ]);
+});
+
+test('autheticated user can delete a product', function(){
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $product = Product::factory()->create();
+
+    $this->deleteJson("/api/products/{$product->id}")
+        ->assertStatus(200);
+
+    $this->assertDatabaseMissing('products', [
+        'id' => $product->id,
+        'name' => $product->name,
+    ]);
+});
