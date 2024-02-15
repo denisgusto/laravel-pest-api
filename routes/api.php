@@ -14,4 +14,5 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 });

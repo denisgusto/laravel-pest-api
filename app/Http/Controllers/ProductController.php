@@ -16,7 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::paginate();
-        
+
         return new ProductCollection($products);
     }
 
@@ -59,7 +59,10 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $payload = $request->validated();
+
+        $product->name = $payload['name'];
+        $product->save();
     }
 
     /**

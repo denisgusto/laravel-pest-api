@@ -44,7 +44,7 @@ test('guest user not allow to create a product', function () {
 test('authenticated user can create a new product', function () {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
-    
+
     $product = Product::factory()->raw();
 
     $this->postJson('/api/products', $product)
@@ -52,4 +52,35 @@ test('authenticated user can create a new product', function () {
 
     $this->assertDatabaseCount('products', 1);
     $this->assertDatabaseHas('products', $product);
+});
+
+test('guest user should not update a product', function () {
+    $product = Product::factory()->create();
+
+    $data = Product::factory()->raw();
+
+    $this->putJson("/api/products/{$product->id}", $data)
+        ->assertStatus(401);
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'name' => $product->name,
+    ]);
+});
+
+test('authenticated user can update a product', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $product = Product::factory()->create();
+
+    $data = Product::factory()->raw();
+
+    $this->putJson("/api/products/{$product->id}", $data)
+        ->assertStatus(200);
+
+    $this->assertDatabaseHas('products', [
+        'id' => $product->id,
+        'name' => $data['name'],
+    ]);
 })->only();
