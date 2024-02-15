@@ -97,7 +97,7 @@ test('guest user cannot delete a product', function () {
     ]);
 });
 
-test('autheticated user can delete a product', function(){
+test('autheticated user can delete a product', function () {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
 
