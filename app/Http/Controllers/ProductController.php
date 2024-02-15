@@ -33,7 +33,9 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        $payload = $request->validated();
+
+        return Product::create($payload);
     }
 
     /**
